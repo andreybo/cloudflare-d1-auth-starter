@@ -11,16 +11,5 @@ database_id = "YOUR-DATABASE-ID"
 migrations_dir = "drizzle/migrations"
 
 [vars]
-APP_API_BASE_URL = "http://localhost:1234"
 JWT_SECRET = "my_super_secret_key_123!"
 REFRESH_SECRET = "YOUR-REFRESH-SECRET-KEY-HERE"
-CLOUDFLARE_D1_TOKEN="CLOUDFLARE-TOKEN"
-CLOUDFLARE_DATABASE_ID="YOUR-DATABASE-ID"
-CLOUDFLARE_ACCOUNT_ID="YOUR-ACCOUNT-ID"
-
-[[kv_namespaces]]
-binding = "SESSIONS"
-id = "YOUR_KV_ID"
-
-[build]
-command = "pnpm install && pnpm run build"

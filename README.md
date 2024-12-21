@@ -32,6 +32,85 @@ The root package includes global scripts:
 
 ---
 
+## Setup Instructions
+
+### 1. Install Dependencies
+
+Ensure you have `pnpm` installed. If not, you can install it globally:
+
+```bash
+npm install -g pnpm
+```
+
+Once installed, run the following command in the project root to install all dependencies for both client and server:
+
+```bash
+pnpm install
+```
+
+### 2. Create Environment Files
+
+Both the server and client require `.env` files for configuration. Create the following `.env` files:
+
+#### Server `.env`
+```env
+JWT_SECRET=your_secret_key
+D1_DATABASE=d1_database_name
+REFRESH_SECRET=your_refresh_secret_key
+CLOUDFLARE_D1_TOKEN=your_d1_token
+CLOUDFLARE_DATABASE_ID=your_database_id
+CLOUDFLARE_ACCOUNT_ID=your_account_id
+NODE_ENV=development
+DATABASE_URL=.wrangler/state/v3/d1/miniflare-D1DatabaseObject/YOUR_DB.sqlite
+```
+
+#### Client `.env`
+```env
+VITE_APP_NAME="App"
+VITE_APP_API_BASE_URL=http://localhost:8787
+```
+
+You can also create `.env.development` and `.env.production` files for environment-specific configurations.
+
+### 3. Update Wrangler Configuration
+
+In `wrangler.toml`, update the following variables:
+
+```toml
+name = "auth-server"
+main = "src/index.js"
+compatibility_date = "2024-11-06"
+compatibility_flags = ["nodejs_compat"]
+account_id = "YOUR-ACCOUNT-ID"
+
+[[d1_databases]]
+binding = "AUTH_DB"
+database_name = "d1-auth"
+database_id = "YOUR-DATABASE-ID"
+migrations_dir = "drizzle/migrations"
+
+[vars]
+JWT_SECRET = "my_super_secret_key_123!"
+REFRESH_SECRET = "YOUR-REFRESH-SECRET-KEY-HERE"
+```
+
+Make sure the values align with your `.env` file.
+
+### 4. Add GitHub Repository Secrets
+
+To automate builds on Cloudflare, add the following secrets to your GitHub repository:
+
+- **`CF_API_TOKEN`**: Your Cloudflare API Token.
+- **`CF_ACCOUNT_ID`**: Your Cloudflare Account ID.
+- **`CF_PROJECT_ID`**: Your Cloudflare Pages project ID (if using Pages).
+
+#### Steps to Add Secrets
+1. Navigate to your GitHub repository.
+2. Go to **Settings** > **Secrets and variables** > **Actions**.
+3. Add the secrets with the appropriate names and values.
+
+---
+
 ## Server Setup
 
 The server is built with Cloudflare Workers and uses the following stack:
@@ -50,6 +129,43 @@ The server is built with Cloudflare Workers and uses the following stack:
 - **`push:migration`**: Pushes migrations to the local D1 database.
 
 ### Database Initialization
+
 Run the following to create a local database and apply schema:
+
 ```bash
 wrangler d1 execute d1-auth --file=schema.sql
+```
+
+To create the database schema in the remote D1 environment, run:
+
+```bash
+wrangler d1 execute d1-auth --file=schema.sql --remote
+```
+
+---
+
+## Development Workflow
+
+### Start Development
+
+Run the following command to start both the client and server in development mode:
+
+```bash
+pnpm dev
+```
+
+### Build for Production
+
+To build the client and server:
+
+```bash
+pnpm build
+```
+
+### Deploy
+
+To deploy the project to Cloudflare Workers:
+
+```bash
+pnpm deploy
+```
