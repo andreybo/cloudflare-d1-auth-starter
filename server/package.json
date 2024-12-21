@@ -1,0 +1,32 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"WRANGLER,DRIZZLE-KIT\" -c \"blue,green\" \"wrangler dev --env development --log-level debug > debug/wrangler_debug.log 2>&1\" \"drizzle-kit studio\"",
+    "start": "wrangler deploy --env production",
+    "build": "esbuild src/index.js --bundle --outfile=dist/index.js --platform=node --format=esm",
+    "serve": "node server.js",
+    "generate:migration": "drizzle-kit generate --schema src/db/schema.ts --dialect sqlite",
+    "push:migration": "drizzle-kit push --db ./drizzle/sqlite.db"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "@tsndr/cloudflare-worker-jwt": "^3.1.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "djwt": "^1.1.0",
+    "dotenv": "^16.4.7",
+    "hono": "^4.6.14",
+    "mariadb": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "concurrently": "^9.1.0",
+    "drizzle-kit": "^0.30.1",
+    "drizzle-orm": "^0.38.2",
+    "esbuild": "^0.24.0",
+    "tsx": "^4.19.2",
+    "wrangler": "^3.96.0"
+  }
+}

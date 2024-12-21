@@ -1,0 +1,16 @@
+.env
+
+dist
+node_modules
+package-lock.json
+
+server/.wrangler/*
+server/database/*
+server/wrangler_debug.log
+server/.env.development
+server/.env.production
+server/drizzle/*
+server/debug/*
+pnpm-lock.yaml
+client/.env.development
+client/.env.production

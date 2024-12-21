@@ -1,0 +1,26 @@
+{
+  "name": "monorepo",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "postinstall": "echo 'Done'",
+    "dev": "pnpm -r run dev",
+    "build": "pnpm -r run build",
+    "start": "pnpm -r run start",
+    "lint": "pnpm -r run lint"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "wrangler": "^3.96.0"
+  }
+}
