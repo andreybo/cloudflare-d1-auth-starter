@@ -40,7 +40,7 @@ jobs:
         run: pnpm install
 
       - name: 🔬 Lint
-        run: pnpm -r run lint || true  # Does not interrupt execution if linting fails
+        run: pnpm -r run lint || true 
 
   publish-client:
     name: 🚀 Publish Client
@@ -48,8 +48,8 @@ jobs:
     needs: [lint]
     runs-on: ubuntu-latest
     env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      VITE_APP_NAME: ${{ secrets.VITE_APP_NAME }}
+      VITE_APP_API_BASE_URL: ${{ secrets.VITE_APP_API_BASE_URL }}
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
@@ -68,6 +68,12 @@ jobs:
       - name: 📥 Install deps
         working-directory: ./client
         run: pnpm install
+
+      - name: ➕ Create .env file
+        working-directory: ./client
+        run: |
+          echo "VITE_APP_NAME=${{ secrets.VITE_APP_NAME }}" >> .env
+          echo "VITE_APP_API_BASE_URL=${{ secrets.VITE_APP_API_BASE_URL }}" >> .env
 
       - name: ⚙️ Build Client
         working-directory: ./client
@@ -87,10 +93,12 @@ jobs:
     needs: [lint]
     runs-on: ubuntu-latest
     env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_D1_TOKEN: ${{ secrets.CLOUDFLARE_D1_TOKEN }}
       CLOUDFLARE_DATABASE_ID: ${{ secrets.CLOUDFLARE_DATABASE_ID }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      REFRESH_SECRET: ${{ secrets.REFRESH_SECRET }}
+      NODE_ENV: production
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
@@ -109,6 +117,16 @@ jobs:
       - name: 📥 Install deps
         working-directory: ./server
         run: pnpm install
+
+      - name: ➕ Create .env file
+        working-directory: ./server
+        run: |
+          echo "CLOUDFLARE_D1_TOKEN=${{ secrets.CLOUDFLARE_D1_TOKEN }}" >> .env
+          echo "CLOUDFLARE_DATABASE_ID=${{ secrets.CLOUDFLARE_DATABASE_ID }}" >> .env
+          echo "CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}" >> .env
+          echo "NODE_ENV=production" >> .env
 
       - name: ⚙️ Build Server
         working-directory: ./server
