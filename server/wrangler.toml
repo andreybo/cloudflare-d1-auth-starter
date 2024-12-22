@@ -13,3 +13,7 @@ migrations_dir = "drizzle/migrations"
 [vars]
 JWT_SECRET = "my_super_secret_key_123!"
 REFRESH_SECRET = "YOUR-REFRESH-SECRET-KEY-HERE"
+
+routes = [
+  { pattern = "go.toopost.us", custom_domain = true }
+]

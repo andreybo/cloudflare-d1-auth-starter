@@ -64,14 +64,8 @@ export const Register = () => {
 
         try {
             const uuid = crypto.randomUUID();
-            const response = await axios.post(
-                `${import.meta.env.VITE_APP_API_BASE_URL}/api/register`,
-                { username, email, password, uuid },
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true,
-                }
-            );
+            const response = await axios.post('/api/register', { username, email, password, uuid });
+
             toast.success("Registration successful! Redirecting...");
             setSuccess(true);
         } catch (err) {

@@ -3,18 +3,18 @@ import { cors } from 'hono/cors';
 import auth from './routes/auth.js';
 import test from './routes/test.js';
 import main from './routes/main.js';
+import { jwt } from 'hono/jwt';
 
 const app = new Hono();
 
-const allowedOrigins = ['http://localhost:1234', 'https://auth-server.your-worker.workers.dev'];
+const allowedOrigins = ['https://your-app.live.com', 'http://localhost:1234'];
 
 app.use('*', cors({
-  origin: (c) => {
-    const requestOrigin = c.req?.headers?.get('Origin');
-    if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
-      return requestOrigin;
+  origin: (origin) => {
+    if (origin && allowedOrigins.includes(origin)) {
+      return origin;
     }
-    return allowedOrigins[0];
+    return undefined;
   },
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'OPTIONS'],
@@ -23,6 +23,7 @@ app.use('*', cors({
 
 const publicRoutes = ['/api/register', '/api/login', '/api/check-db'];
 
+// JWT Authentication Middleware
 app.use('/api/*', async (c, next) => {
   // Skip JWT authentication for public routes
   if (publicRoutes.includes(c.req.path)) {
