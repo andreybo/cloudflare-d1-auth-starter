@@ -15,5 +15,5 @@ JWT_SECRET = "my_super_secret_key_123!"
 REFRESH_SECRET = "YOUR-REFRESH-SECRET-KEY-HERE"
 
 routes = [
-  { pattern = "go.toopost.us", custom_domain = true }
+  { pattern = "www.your-custom.domain", custom_domain = true }
 ]

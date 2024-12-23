@@ -3,7 +3,7 @@ import App from './App';
 import { AuthProvider } from './contexts/AuthProvider';
 import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 
-if(import.meta.env.MODE === 'production') {
+if(import.meta.env.NODE_ENV != 'development') {
     disableReactDevTools();
 }
 

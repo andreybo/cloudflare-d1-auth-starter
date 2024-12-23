@@ -104,7 +104,7 @@ To automate builds on Cloudflare, add the following secrets to your GitHub repos
 - **`CF_ACCOUNT_ID`**: Your Cloudflare Account ID.
 - **`CF_PROJECT_ID`**: Your Cloudflare Pages project ID (if using Pages).
 - **`VITE_APP_NAME`**: Your apps name.
-- **`secrets.VITE_APP_API_BASE_URL`**: API url.
+- **`VITE_APP_API_BASE_URL`**: API url.
 
 #### Steps to Add Secrets
 1. Navigate to your GitHub repository.
