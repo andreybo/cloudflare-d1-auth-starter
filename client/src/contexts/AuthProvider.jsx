@@ -1,35 +1,45 @@
-import { createContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, createContext } from "react";
+import { axiosPrivate } from "../lib/axios";
+import Loader from "../components/Loader";
 
-const AuthContext = createContext({});
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const [auth, setAuth] = useState(() => {
-        const savedAuth = localStorage.getItem("auth");
-        return savedAuth ? JSON.parse(savedAuth) : {};
-    });
-    
-    const [persist, setPersist] = useState(() => {
-        const persistValue = localStorage.getItem("persist");
-        return persistValue ? JSON.parse(persistValue) : false;
-    });
+    const [auth, setAuth] = useState(null);
+    const [loading, setLoading] = useState(true); // Добавим состояние загрузки
 
     useEffect(() => {
-        if (auth?.accessToken && persist) {
-            localStorage.setItem("auth", JSON.stringify(auth));
-        } else {
-            localStorage.removeItem("auth");
-        }
-    }, [auth, persist]);
+        const fetchSession = async () => {
+            try {
+                const response = await axiosPrivate.get('/api/auth/session');
+                console.log('Response headers:', response.headers);
+                console.log('Response body:', response.data);
 
-    useEffect(() => {
-        localStorage.setItem("persist", JSON.stringify(persist));
-    }, [persist]);
+                if (response.data?.user) {
+                    setAuth(response.data);
+                    console.log('User authenticated:', response.data.user);
+                } else {
+                    setAuth(null);
+                    console.log('No user data found.');
+                }
+            } catch (error) {
+                console.error('Failed to fetch session:', error);
+                setAuth(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSession();
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Показать загрузчик пока идёт проверка сессии
+    }
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, persist, setPersist }}>
+        <AuthContext.Provider value={{ auth, setAuth }}>
             {children}
         </AuthContext.Provider>
-    )
-}
-
-export default AuthContext;
+    );
+};

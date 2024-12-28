@@ -7,7 +7,6 @@ test.get('/debug-env', (c) => {
   return c.json({
     AUTH_DB: c.env.AUTH_DB ? 'AUTH_DB connected' : 'AUTH_DB is undefined',
     APP_API_DEV_URL: c.env.APP_API_DEV_URL || 'Not set',
-    JWT_SECRET: c.env.JWT_SECRET || 'Not set',
   });
 });
 

@@ -1,58 +1,30 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/auth/useAuth";
+// RequireAuth.jsx
+
 import { Error } from "../pages/Error/index";
-import jwt_decode from "jwt-decode";
 
 export const RequireAuth = ({ allowedRoles }) => {
     const { auth } = useAuth();
     const location = useLocation();
 
-    // Проверяем, есть ли токен
-    if (!auth?.accessToken) {
-        console.warn("No access token found. Redirecting to login...");
+    // Check if the session exists (i.e., if the user is logged in)
+    if (!auth?.user) {
+        console.warn("No user session found. Redirecting to login...");
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    console.log(jwt_decode(auth.accessToken));
+    // Get user role from session data
+    const role = auth.user.role || null;
+    console.log("User role:", role);
 
-    let decoded;
-    try {
-        // Декодируем токен
-        decoded = jwt_decode(auth.accessToken);
-
-        // Проверяем истечение токена
-        if (decoded.exp * 1000 < Date.now()) {
-            console.warn("Access token has expired. Redirecting to login...");
-            return <Navigate to="/login" state={{ from: location }} replace />;
-        }
-    } catch (error) {
-        console.error("Failed to decode token:", error.message);
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
-
-    // Получаем роль пользователя
-    const role = decoded?.role || null;
-    console.log("Decoded role:", role);
-
-    // Проверяем, соответствует ли роль необходимым
+    // Check if the user's role matches the allowed roles
     const hasAccess = allowedRoles.includes(role);
     if (!hasAccess) {
         console.warn("User does not have the required role:", { userRole: role, allowedRoles });
         return <Error code="403" />;
     }
 
-    // Если доступ есть, рендерим дочерние компоненты
+    // If access is granted, render child components
     return <Outlet />;
-};
-
-
-export const RequireNotAuth = () => {
-    const { auth } = useAuth();
-    const location = useLocation();
-
-    return (
-        auth?.username
-            ? <Navigate to="/" state={{ from: location }} replace />
-            : <Outlet />
-    );
 };

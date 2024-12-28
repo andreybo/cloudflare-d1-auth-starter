@@ -1,4 +1,4 @@
-# Cloudflare D1 Auth Starter
+# Cloudflare D1 KV Auth Starter
 
 This is a monorepo for a starter project utilizing Cloudflare D1 as a database with a robust authentication system. The project is split into a **server** (Cloudflare Workers) and a **client** (React with Vite). It provides a complete setup for managing users, tokens, and a database with Drizzle ORM.
 
@@ -7,11 +7,12 @@ This is a monorepo for a starter project utilizing Cloudflare D1 as a database w
 ## Features
 
 - **Cloudflare D1 Database**: Local and production database support using Drizzle ORM.
-- **Authentication**: JWT-based authentication for secure API access.
+- **Authentication**: Cookie-based authentication with Cloudflare KV for secure session management.
 - **React Frontend**: A modern and fast frontend powered by Vite and Tailwind CSS.
 - **Development Workflow**: Monorepo with `pnpm` workspaces for seamless development.
 - **Built-in Linting**: ESLint is preconfigured for both client and server.
 - **Scalable**: Easily extendable for more features and services.
+- **Local Development**: Uses Miniflare for local database and KV simulation.
 
 ---
 
@@ -54,14 +55,11 @@ Both the server and client require `.env` files for configuration. Create the fo
 
 #### Server `.env`
 ```env
-JWT_SECRET=your_secret_key
 D1_DATABASE=d1_database_name
-REFRESH_SECRET=your_refresh_secret_key
 CLOUDFLARE_D1_TOKEN=your_d1_token
 CLOUDFLARE_DATABASE_ID=your_database_id
 CLOUDFLARE_ACCOUNT_ID=your_account_id
 NODE_ENV=development
-DATABASE_URL=.wrangler/state/v3/d1/miniflare-D1DatabaseObject/YOUR_DB.sqlite
 ```
 
 #### Client `.env`
@@ -77,10 +75,6 @@ You can also create `.env.development` and `.env.production` files for environme
 In `wrangler.toml`, update the following variables:
 
 ```toml
-name = "auth-server"
-main = "src/index.js"
-compatibility_date = "2024-11-06"
-compatibility_flags = ["nodejs_compat"]
 account_id = "YOUR-ACCOUNT-ID"
 
 [[d1_databases]]
@@ -89,9 +83,13 @@ database_name = "d1-auth"
 database_id = "YOUR-DATABASE-ID"
 migrations_dir = "drizzle/migrations"
 
+[[kv_namespaces]]
+binding = "SESSION_KV"
+id = "YOUR-KV-ID"
+preview_id = "YOUR-KV-ID"
+
 [vars]
-JWT_SECRET = "my_super_secret_key_123!"
-REFRESH_SECRET = "YOUR-REFRESH-SECRET-KEY-HERE"
+NODE_ENV = "production"
 ```
 
 Make sure the values align with your `.env` file.
@@ -103,8 +101,8 @@ To automate builds on Cloudflare, add the following secrets to your GitHub repos
 - **`CF_API_TOKEN`**: Your Cloudflare API Token.
 - **`CF_ACCOUNT_ID`**: Your Cloudflare Account ID.
 - **`CF_PROJECT_ID`**: Your Cloudflare Pages project ID (if using Pages).
-- **`VITE_APP_NAME`**: Your apps name.
-- **`VITE_APP_API_BASE_URL`**: API url.
+- **`VITE_APP_NAME`**: Your app's name.
+- **`VITE_APP_API_BASE_URL`**: API URL.
 
 #### Steps to Add Secrets
 1. Navigate to your GitHub repository.
@@ -118,7 +116,7 @@ To automate builds on Cloudflare, add the following secrets to your GitHub repos
 The server is built with Cloudflare Workers and uses the following stack:
 - **Hono**: Lightweight web framework for Cloudflare Workers.
 - **Drizzle ORM**: Modern and type-safe ORM for database management.
-- **JWT**: Secure authentication using JSON Web Tokens.
+- **Cookie-Based Authentication**: Secure authentication using cookies and Cloudflare KV for session storage.
 
 ### Key Features
 - **Database Management**: Use Drizzle ORM to generate and push migrations.
@@ -170,4 +168,3 @@ To deploy the project to Cloudflare Workers:
 
 ```bash
 pnpm deploy
-```

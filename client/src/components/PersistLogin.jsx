@@ -1,41 +1,33 @@
+// client/src/components/PersistLogin.jsx
+
 import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
-import useRefreshToken from "../hooks/auth/useRefreshToken";
-import useAuth from "../hooks/auth/useAuth";
+import useAuth from "../hooks/auth/useAuth"; // Ensure correct import path
 
 const PersistLogin = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const refresh = useRefreshToken();
-    const { auth, persist } = useAuth();
+    const { auth } = useAuth(); // Destructure only what's needed
 
     useEffect(() => {
-        let isMounted = true;
-
-        const checkRefreshToken = async () => {
-            try {
-                await refresh();
-            } catch(err) {
-                console.error(err);
-            } finally {
-                isMounted && setIsLoading(false);
-            }
+        // If the user is authenticated, stop loading
+        if (auth) {
+            setIsLoading(false);
+        } else {
+            // Implement any additional logic if needed, such as auto-login attempts
+            setIsLoading(false);
         }
-
-        !auth?.accessToken && persist ? checkRefreshToken() : setIsLoading(false);
-
-        return () => isMounted = false;
-    }, [])
+    }, [auth]);
 
     return (
         <>
-            { !persist
-                ? <Outlet />
-                : isLoading
-                    ? <h2 className="container">Loading...</h2>
-                    : <Outlet />
-            }
+            {/* Render Outlet only after loading is complete */}
+            {isLoading ? (
+                <h2 className="container">Loading...</h2>
+            ) : (
+                <Outlet />
+            )}
         </>
-    )
-}
+    );
+};
 
 export default PersistLogin;

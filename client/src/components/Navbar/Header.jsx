@@ -1,3 +1,4 @@
+// NavbarHeader.js
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
@@ -7,8 +8,7 @@ import useLogout from "../../hooks/auth/useLogout";
 
 const NAV_ITEMS = [
   { name: "Home", path: "/" },
-  { name: "Private", path: "/private" },
-  { name: "Admin", path: "/admin" },
+  { name: "RSS Feeds", path: "/rss-feeds" },
 ];
 
 const NavbarHeader = () => {
@@ -25,7 +25,7 @@ const NavbarHeader = () => {
         <Link to="/" className="max-sm:hidden">
           <img
             src="/logo.svg"
-            alt="Logo"
+            alt="toopost"
             className="w-36"
           />
         </Link>
@@ -68,7 +68,7 @@ const NavbarHeader = () => {
               </li>
             ))}
             <li className="text-center py-4 lg:py-0">
-              {auth?.username ? (
+              {auth?.user?.username ? (
                 <button
                   className="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-200 flex flex-row items-center gap-2"
                   onClick={logout}

@@ -4,16 +4,37 @@ compatibility_date = "2024-11-06"
 compatibility_flags = ["nodejs_compat"]
 account_id = "YOUR-ACCOUNT-ID"
 
-[[d1_databases]]
-binding = "AUTH_DB"
-database_name = "d1-auth"
-database_id = "YOUR-DATABASE-ID"
-migrations_dir = "drizzle/migrations"
-
-[vars]
-JWT_SECRET = "my_super_secret_key_123!"
-REFRESH_SECRET = "YOUR-REFRESH-SECRET-KEY-HERE"
-
 routes = [
   { pattern = "www.your-custom.domain", custom_domain = true }
 ]
+
+# Production environment
+[env.production]
+
+[[env.production.d1_databases]]
+binding = "AUTH_DB"
+database_name = "d1-auth"
+database_id = "YOUR-DATABASE-ID"
+migrations_dir = "drizzle"
+
+[[env.production.kv_namespaces]]
+binding = "SESSION_KV"
+id = "YOUR-KV-ID"
+preview_id = "YOUR-KV-ID"
+
+[env.production.vars]
+NODE_ENV = "production"
+
+# Development environment
+[env.development]
+
+[[env.development.d1_databases]]
+binding = "AUTH_DB"
+database_name = "d1-auth"
+database_id = "YOUR-DATABASE-ID"
+migrations_dir = "drizzle"
+
+[[env.development.kv_namespaces]]
+binding = "SESSION_KV"
+id = "YOUR-KV-ID"
+preview_id = "YOUR-KV-ID"
