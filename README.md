@@ -168,7 +168,7 @@ To deploy the project to Cloudflare Workers:
 
 ```bash
 pnpm deploy
-
+```
 
 ## Thank You for Your Support
 
